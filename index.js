@@ -10,6 +10,9 @@ var
   }),
   Project = require('./project');
 
+var
+  SQLITE_CONSTRAINT = 19;
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -53,9 +56,13 @@ app.post('/api/projects', function (req, resp, next) {
     resp.status(200).json(p.toJson());
     return next();
   }).catch(function (err) {
-    console.log(arguments);
-    resp.status(500).json(err);
-    return next();
+    if (err.errno === SQLITE_CONSTRAINT) {
+      resp.status(400).json(err);
+      return next();
+    } else {
+      resp.status(500).json(err);
+      return next();
+    }
   });
 });
 
@@ -65,9 +72,11 @@ app.get('/api/projects/:id', function (req, resp, next) {
       var project = proj;
       if (proj) {
         project = new Project(proj.id, proj.title, proj.description, proj.url);
+        resp.json(project);
+        return next();
+      } else {
+        resp.status(404).json(null);
       }
-      resp.json(project);
-      return next();
     }).catch(function (err) {
       resp.status(500).json(err);
       return next();
