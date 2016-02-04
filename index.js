@@ -25,7 +25,7 @@ app.get('/api/projects', function (req, resp, next) {
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
-        return new Project(proj.id, proj.title, proj.description, proj.url);
+        return new Project(proj.id, proj.title, proj.description, proj.url).toJson();
       });
       resp.json(projects);
       return next();
@@ -72,7 +72,7 @@ app.get('/api/projects/:id', function (req, resp, next) {
       var project = proj;
       if (proj) {
         project = new Project(proj.id, proj.title, proj.description, proj.url);
-        resp.json(project);
+        resp.json(project.toJson());
         return next();
       } else {
         resp.status(404).json(null);
