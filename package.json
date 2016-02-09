@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prestart": "npm install",
     "start": "node index.js",
-    "test": "mocha --recursive specifications"
+    "test": "mocha specifications/localhost"
   },
   "repository": {
     "type": "git",
